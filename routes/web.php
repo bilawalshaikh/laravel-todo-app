@@ -3,6 +3,7 @@
 use App\Http\Controllers\TodoController;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,7 +22,21 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/',[TodoController::class,'index']);
-Route::post('/',[TodoController::class,'store']);
-Route::patch('/{todo}',[TodoController::class,'update']);
-Route::delete('/{todo}',[TodoController::class,'destroy']);
+// Route::get('/',[TodoController::class,'index']);
+// Route::post('/',[TodoController::class,'store']);
+// Route::patch('/{todo}',[TodoController::class,'update']);
+// Route::delete('/{todo}',[TodoController::class,'destroy']);
+
+
+// Route::resource('/', TodoController::class)->only([
+//     'index', 'store', 'update', 'destroy'
+// ]);
+
+
+ 
+Route::resource('todos', TodoController::class);
+
+
+// Route::resource('todos', TodoController::class)->only([
+//     'index', 'store', 'update', 'destroy'
+// ]);

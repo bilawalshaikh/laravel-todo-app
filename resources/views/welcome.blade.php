@@ -14,15 +14,36 @@
     <div class="container mx-auto p-6 bg-white rounded-xl shadow-lg">
         <h1 class=" bg-gradient-to-r from-purple-400 text-2xl font-bold text-center text-gray-800 mb-8">TODO Application</h1>
         <x-flash-message  />
+       
+        <!-- error msg -->
+        @if ($errors->any())
+        <div x-data="{show:true}" x-init="setTimeout(()=> show = false,3000)" x-show="show" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Oops! There was an error.</strong>
+            <ul class="list-disc mt-2 pl-4 ">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+            </span>
+        </div>
+    @endif
+
+    
+    {{-- @error('title')
+    <div class="alert alert-danger">{{ $message }}</div>
+@enderror --}}
+
 
         <div class="mb-6 ">
-            <form class="flex flex-col space-y-4" method="POST" action="/">
+            <form class="flex flex-col space-y-4" method="POST" action="{{ route('todos.store') }}">
                 @csrf
-                <input class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-purple-600" type="text" name="title" placeholder="The todo title">
+                <input id="title" class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-purple-600" type="text" name="title" placeholder="The todo title" required >
                 <textarea class="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-purple-600" name="description" placeholder="the todo description" cols="30" rows="5"></textarea>
                 <button class="w-20 py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition duration-300">Add</button>
             </form>
         </div>
+    
         <hr class="border-t border-gray-300">
         <div class="mt-4 space-y-4 ">
             @foreach ($todos as $todo)
@@ -32,7 +53,7 @@
                     <p class="text-gray-600">{{$todo->description}}</p>
                 </div>
                 <div class="flex space-x-3">
-                    <form method="POST" action="/{{$todo->id}}">
+                    <form method="POST"  action="{{ route('todos.update', $todo->id) }}" >
                         @csrf  
                         @method('PATCH')
                         <button class="py-2 px-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-300">
@@ -41,7 +62,7 @@
                             </svg>
                         </button>
                     </form>
-                    <form method="POST" action="/{{$todo->id}}">
+                    <form method="POST"  action="{{ route('todos.destroy', $todo->id) }}">
                         @csrf  
                         @method('DELETE')
                         <button class="py-2 px-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-300">
@@ -50,6 +71,9 @@
                             </svg>
                         </button>
                     </form>
+ 
+                    
+ 
                 </div>
             </div>
             @endforeach

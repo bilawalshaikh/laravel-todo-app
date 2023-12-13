@@ -2,42 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Todo;
+use id;
 use Illuminate\Http\Request;
+use App\Models\Todo;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Session;
+use App\Http\Requests\StoreTodoRequest;
+use Attribute;
+use League\CommonMark\Extension\Attributes\Node\Attributes;
 
 class TodoController extends Controller
 {
     public function index()
     {
         $todos = Todo::all();
-        return view('welcome',[
-            'todos' =>$todos
-        ]);
-
-    }
-    public function store(){
-       $attributes = request()->validate([
-            'title' => 'required',
-            'description' => 'nullable'
-       ]);
-       TODO::create($attributes);
-    //    Session::flash('message', 'Listing created');
-
-       return redirect('/')->with('message','Created succesfully');
+        return view('welcome', 
+        // ['todos' => $todos ]
+        compact('todos')
+    );
     }
 
-    public function update(Todo $todo){
+    public function create()
+    {
+        // Add logic for creating a new resource if needed
+    }
+
+    // public function store(Request $request)
+    public function store(StoreTodoRequest $request)
+    {
+        // $attributes = $request->validate([
+        //     'title' => 'required|min:5',
+        //     'description' => 'nullable'
+        // ]);
+
+        $attributes = $request->validated();
+
+
+        Todo::create($attributes);
+        return redirect('/todos')->with('message', 'Created successfully');
+    }
+
+    public function show(string $id)
+    {
+        // Logic to show a specific resource
+    }
+
+    public function edit(string $id)
+    {
+        // Logic for editing a specific resource
         
-        $todo->update(['isDone' => !$todo->isDone]);
-        return redirect('/')->with('message','Update succesfully');;
     }
-    
-public function destroy(Todo $todo){
-    $todo->delete();
 
-    return redirect('/')->with('message','Deleted succesfully');
 
-}
+    public function update(Request $request, Todo $todo)
+    {
+        $todo->update(['isDone' => !$todo->isDone]);
+        return redirect('/todos')->with('message', 'Updated successfully');
+    }
+
+    public function destroy(Todo $todo)
+    {
+        $todo->delete();
+        return redirect('/todos')->with('message', 'Deleted successfully');
+    }
 }
